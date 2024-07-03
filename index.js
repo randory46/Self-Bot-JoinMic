@@ -1,11 +1,29 @@
 const { Client } = require("discord.js-selfbot-v13");
+const colors = require("colors");
 const client = new Client();
 
 const prefix = "!self";
-const admins = ["934067721602228315", "Copy ID Account"];
+const admins = ["CopyIDadmin"]; //copy id admin nabaiad account asli yki bashe
+
+const infoText =
+  "```diff\n- Bot Commands:\n\n" +
+  "+ " +
+  prefix +
+  "join CopyIDvoice - Request bot to join your voice channel\n" +
+  "+ " +
+  prefix +
+  "leave CopyIDserver - Request bot to leave your voice channel\n```";
 
 client.on("ready", async () => {
   console.log(`${client.user.username} is ready!`);
+
+  try {
+    admins.map(async (probs) => {
+      (await client.users.fetch(probs)).send(infoText);
+    });
+  } catch (error) {
+    console.error(error);
+  }
 
   client.user.setStatus("idle");
 });
@@ -16,12 +34,15 @@ client.on("messageCreate", async (message) => {
     console.log("Command received:", args);
   }
 
-  if (message.content.startsWith(prefix + "jv")) {
+  if (message.content.startsWith(prefix + "join")) {
     setTimeout(() => {
       message.delete();
     }, 2000);
 
-    if (!admins.includes(message.member.id))
+    if (
+      !admins.includes(message.member.id) ||
+      message.author.id !== client.user.id
+    )
       return message.reply("Missing Permission").then((msg) => {
         setTimeout(() => {
           msg.delete();
@@ -41,11 +62,14 @@ client.on("messageCreate", async (message) => {
     });
   }
 
-  if (message.content.startsWith(prefix + "dc")) {
+  if (message.content.startsWith(prefix + "leave")) {
     setTimeout(() => {
       message.delete();
     }, 2000);
-    if (!admins.includes(message.member.id))
+    if (
+      !admins.includes(message.member.id) ||
+      message.author.id !== client.user.id
+    )
       return message.reply("Missing Permission").then((msg) => {
         setTimeout(() => {
           msg.delete();
@@ -58,7 +82,7 @@ client.on("messageCreate", async (message) => {
       try {
         connection.destroy();
         message.author.send(
-          `Disconnected from <#${connection.joinConfig.channelId}> .`
+          `Disconnected from <#${connection.joinConfig.channelId}> .`,
         );
       } catch (error) {
         console.log("have error : " + error);
@@ -70,3 +94,13 @@ client.on("messageCreate", async (message) => {
 });
 
 client.login("Token");
+
+process.on("unhandledRejection", (e) => {
+  return console.error(colors.red(e));
+});
+client.on("error", (e) => {
+  console.error(colors.red(e));
+});
+client.on("shardError", (e) => {
+  console.error(colors.red(e));
+});
