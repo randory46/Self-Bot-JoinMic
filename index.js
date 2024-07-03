@@ -3,7 +3,7 @@ const colors = require("colors");
 const client = new Client();
 
 const prefix = "!self";
-const admins = ["CopyIDadmin"]; //copy id admin nabaiad account asli yki bashe
+const admins = ["CopyIDadmin"]; //کپی ایدی ادمین باید اکانتی جدا از اکانت اصلی که توکنش رو وارد کردید باشه
 
 const infoText =
   "```diff\n- Bot Commands:\n\n" +
@@ -19,6 +19,7 @@ client.on("ready", async () => {
 
   try {
     admins.map(async (probs) => {
+      if (!probs) return;
       (await client.users.fetch(probs)).send(infoText);
     });
   } catch (error) {
